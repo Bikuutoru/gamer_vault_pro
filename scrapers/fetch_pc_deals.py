@@ -66,7 +66,8 @@ def fetch_steam_deals():
                 },
                 "metacritic_score": deal.get('metacriticScore'),
                 "thumb": deal.get('thumb'),
-                "url": f"https://www.cheapshark.com/redirect?dealID={deal.get('dealID')}"
+                "url": f"https://www.cheapshark.com/redirect?dealID={deal.get('dealID')}",
+                "store_url": f"https://store.steampowered.com/app/{app_id}"
             })
             
         return formatted_deals

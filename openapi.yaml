@@ -25,6 +25,7 @@ paths:
                 - title: "Clone Drone in the Danger Zone"
                   store: "Epic Games Store"
                   url: "https://www.epicgames.com/store/p/..."
+                  store_url: "https://store.steampowered.com/app/1"
                   status: "Currently Free"
                   image: "https://cdn1.epicgames.com/..."
 
