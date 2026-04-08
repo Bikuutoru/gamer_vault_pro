@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+  title: 'GamerVault Pro: Real-Time PC Gaming Deals & Freebies'
+  description: >-
+    A API definitiva para rastrear ofertas e jogos grátis no Ecossistema PC (Steam e Epic Games Store). 
+    Fornece dados de altíssima precisão com preços regionais 100% autênticos mapeados diretamente da API Oficial da Steam.
+    Foque no que importa e deixe a automação conosco.
+  version: 1.0.0
+servers:
+  - url: 'https://gamervault-pro.p.rapidapi.com/api/v1'
+    description: RapidAPI Production Server
+  - url: 'http://localhost:3000/api/v1'
+    description: Local Development Server
+paths:
+  /deals/freebies:
+    get:
+      summary: Retorna jogos que estão 100% gratuitos no momento no PC.
+      description: Captura brindes semanais rigorosos da Epic Games Store e possíveis ofertas free to keep da Steam.
+      responses:
+        '200':
+          description: Lista de jogos gratuitos encontrada.
+          content:
+            application/json:
+              example:
+                - title: "Clone Drone in the Danger Zone"
+                  store: "Epic Games Store"
+                  url: "https://www.epicgames.com/store/p/..."
+                  status: "Currently Free"
+                  image: "https://cdn1.epicgames.com/..."
+  /deals/latest:
+    get:
+      summary: Lista as ofertas mais quentes do dia (Steam).
+      description: Agregado de PC contendo as maiores economias do dia na plataforma Steam.
+      parameters:
+        - name: store
+          in: query
+          description: Filtrar por loja (Steam, Epic)
+          schema:
+            type: string
+        - name: currency
+          in: query
+          description: Moeda de exibição primária regional (Disponível apenas para usuários PRO)
+          schema:
+            type: string
+            enum: [USD, BRL, TRY, ARS]
+            default: USD
+        - name: convert_to
+          in: query
+          description: Fator cambial de conversão live. Transforma a moeda do Price Target para outra moeda fiduciária usando a cotação oficial do instante.
+          schema:
+            type: string
+            enum: [USD, EUR, GBP, CAD]
+      responses:
+        '200':
+          description: Lista de ofertas processada em Real-time.
+          content:
+            application/json:
+              example:
+                - title: "Cyberpunk 2077"
+                  store: "Steam"
+                  steam_app_id: "1091500"
+                  price:
+                    sale_price_usd: 29.99
+                    normal_price_usd: 59.99
+                    savings: "50%"
+                    regional:
+                      BRL: 149.95
+                      TRY: 959.68
+                      ARS: 29990.00
+                      converted_to_USD: 30.50
+                  url: "https://..."
+  /deals/search:
+    get:
+      summary: Busca ofertas de um jogo específico no ecossistema PC.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Nome do jogo para busca (Exemplo 'Cyberpunk').
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resultado da busca.
+components:
+  securitySchemes:
+    RapidAPIKey:
+      type: apiKey
+      name: X-RapidAPI-Key
+      in: header
+    ProxySecret:
+      type: apiKey
+      name: X-RapidAPI-Proxy-Secret
+      in: header

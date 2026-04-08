@@ -1,0 +1,35 @@
+{
+  "name": "gamer_vault_pro",
+  "version": "1.0.0",
+  "description": "API em tempo real para ofertas de jogos e freebies (RapidAPI)",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "ingest": "python scrapers/master_ingest.py"
+  },
+  "keywords": [
+    "rapidapi",
+    "gaming",
+    "deals",
+    "freebies",
+    "steam",
+    "epic"
+  ],
+  "author": "Antigravity Agent",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.2",
+    "swagger-ui-express": "^5.0.0",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.2.2"
+  }
+}

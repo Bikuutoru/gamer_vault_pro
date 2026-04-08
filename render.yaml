@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: gamervault-pro-api
+    env: node
+    plan: free
+    region: ohio
+    buildCommand: "npm install && pip install -r requirements.txt && python scrapers/master_ingest.py"
+    startCommand: "npm start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: X_RAPIDAPI_PROXY_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
+
+  - type: cron
+    name: gamervault-ingest-worker
+    env: python
+    schedule: "0 */6 * * *" # Roda a cada 6 horas
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python scrapers/master_ingest.py"
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "true"
