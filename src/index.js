@@ -21,9 +21,9 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use((req, res, next) => {
     const proxySecret = req.get('X-RapidAPI-Proxy-Secret');
     // Em produção, habilitar esta checagem para segurança
-    // if (!proxySecret && process.env.NODE_ENV === 'production') {
-    //     return res.status(403).json({ error: 'Forbbiden: Invalid Proxy Secret' });
-    // }
+    if (!proxySecret && process.env.NODE_ENV === 'production') {
+        return res.status(403).json({ error: 'Forbbiden: Invalid Proxy Secret' });
+    }
     next();
 });
 
