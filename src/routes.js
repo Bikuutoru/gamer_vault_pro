@@ -78,18 +78,44 @@ router.get('/deals/latest', (req, res) => {
 /**
  * @route GET /api/v1/deals/search
  */
-router.get('/deals/search', (req, res) => {
+router.get('/deals/search', async (req, res) => {
     const query = req.query.q;
     if (!query) return res.status(400).json({ error: 'Query parameter "q" is required' });
 
     try {
-        const steamDeals = readCache('steam_deals_cache.json');
-        const all = [...steamDeals];
+        // LIVE SEARCH: Bate em tempo real direto na CheapShark 
+        // em vez de consultar a limitadíssima base cacheada
+        const cheapSharkUrl = `https://www.cheapshark.com/api/1.0/deals?title=${encodeURIComponent(query)}&sortBy=Price`;
+        const response = await fetch(cheapSharkUrl);
+        const deals = await response.json();
 
-        const results = all.filter(d => d.title.toLowerCase().includes(query.toLowerCase()));
+        // Filtrar e mapear apenas Lojas alvo (1=Steam, 7=GOG, 11=Epic)
+        const validStoreIds = ['1', '7', '11'];
+        const filtered = deals.filter(d => validStoreIds.includes(d.storeID));
+
+        const storeMap = { '1': 'Steam', '7': 'GOG', '11': 'Epic Games Store' };
+
+        const results = filtered.map(deal => ({
+            title: deal.title,
+            store: storeMap[deal.storeID] || "PC Store",
+            deal_id: deal.dealID,
+            game_id: deal.gameID,
+            steam_app_id: deal.steamAppID || null,
+            price: {
+                sale_price_usd: parseFloat(deal.salePrice || 0),
+                normal_price_usd: parseFloat(deal.normalPrice || 0),
+                savings_percent: parseFloat(deal.savings ? parseFloat(deal.savings).toFixed(2) : 0)
+            },
+            metacritic_score: deal.metacriticScore,
+            thumb: deal.thumb,
+            url: `https://www.cheapshark.com/redirect?dealID=${deal.dealID}`,
+            store_url: deal.steamAppID && deal.storeID === '1' ? `https://store.steampowered.com/app/${deal.steamAppID}` : null
+        }));
+
         res.json(results);
     } catch (error) {
-        res.status(500).json({ error: 'Erro na busca' });
+        console.error("Live Search Error:", error);
+        res.status(500).json({ error: 'Erro na busca em tempo real' });
     }
 });
 

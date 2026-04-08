@@ -79,8 +79,11 @@ paths:
     get:
       tags:
         - Search
-      summary: Search for a specific game deal
-      description: Locate specific deals for any title across the supported PC ecosystem.
+      summary: Live Search (Premium API)
+      description: >-
+        Perform a Deep Live Search against a database of +50,000 PC Games. 
+        Instead of returning only current trending deals, this feature hits the market in real-time to find exact matches for your query (e.g. 'Elden Ring', 'GTA'). 
+        Ideal for Discord Bots and targeted price tracking. Recommended for PRO tiers.
       operationId: searchDeals
       parameters:
         - name: q
