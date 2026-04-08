@@ -4,8 +4,8 @@ services:
     env: node
     plan: free
     region: ohio
-    buildCommand: "npm install && pip install -r requirements.txt && python scrapers/master_ingest.py"
-    startCommand: "npm start"
+    buildCommand: "npm install && pip install -r requirements.txt"
+    startCommand: "python scrapers/master_ingest.py && npm start"
     envVars:
       - key: NODE_ENV
         value: production

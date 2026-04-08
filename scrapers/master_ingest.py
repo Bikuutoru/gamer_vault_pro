@@ -9,6 +9,10 @@ def fetch_exchange_rates():
     Busca as taxas de conversão atuais de Dólar para outras moedas 
     para o recurso custom de 'convert_to' (API Premium).
     """
+    db_path = os.path.join(os.path.dirname(__file__), "../db")
+    if not os.path.exists(db_path):
+        os.makedirs(db_path)
+        
     try:
         res = requests.get('https://api.exchangerate-api.com/v4/latest/USD')
         if res.status_code == 200:
