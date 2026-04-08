@@ -2,23 +2,23 @@ openapi: 3.0.0
 info:
   title: 'GamerVault Pro: Real-Time PC Gaming Deals & Freebies'
   description: >-
-    A API definitiva para rastrear ofertas e jogos grátis no Ecossistema PC (Steam e Epic Games Store). 
-    Fornece dados de altíssima precisão com preços regionais 100% autênticos mapeados diretamente da API Oficial da Steam.
-    Foque no que importa e deixe a automação conosco.
+    The definitive API for tracking deals and free games in the PC Ecosystem (Steam and Epic Games Store). 
+    Provides high-fidelity data with 100% authentic regional pricing mapped directly from the Official Steam API and Epic Storefronts.
   version: 1.0.0
 servers:
-  - url: 'https://gamervault-pro.p.rapidapi.com/api/v1'
-    description: RapidAPI Production Server
-  - url: 'http://localhost:3000/api/v1'
-    description: Local Development Server
+  - url: 'https://gamervault-pro.onrender.com/api/v1'
+    description: Production Server (Render)
 paths:
   /deals/freebies:
     get:
-      summary: Retorna jogos que estão 100% gratuitos no momento no PC.
-      description: Captura brindes semanais rigorosos da Epic Games Store e possíveis ofertas free to keep da Steam.
+      tags:
+        - Freebies
+      summary: Get currently 100% Free PC Games
+      description: Captures active giveaways from the Epic Games Store and "Free to Keep" promotions on Steam.
+      operationId: getFreebies
       responses:
         '200':
-          description: Lista de jogos gratuitos encontrada.
+          description: List of free games found.
           content:
             application/json:
               example:
@@ -27,32 +27,36 @@ paths:
                   url: "https://www.epicgames.com/store/p/..."
                   status: "Currently Free"
                   image: "https://cdn1.epicgames.com/..."
+
   /deals/latest:
     get:
-      summary: Lista as ofertas mais quentes do dia (Steam).
-      description: Agregado de PC contendo as maiores economias do dia na plataforma Steam.
+      tags:
+        - Deals
+      summary: List trending PC deals (Steam focus)
+      description: Aggregated list containing the daily best savings from Steam and Epic Games, including regional price injection.
+      operationId: getLatestDeals
       parameters:
         - name: store
           in: query
-          description: Filtrar por loja (Steam, Epic)
+          description: Filter by store name (e.g., Steam, Epic).
           schema:
             type: string
         - name: currency
           in: query
-          description: Moeda de exibição primária regional (Disponível apenas para usuários PRO)
+          description: Primary regional currency (Available for PRO users).
           schema:
             type: string
             enum: [USD, BRL, TRY, ARS]
             default: USD
         - name: convert_to
           in: query
-          description: Fator cambial de conversão live. Transforma a moeda do Price Target para outra moeda fiduciária usando a cotação oficial do instante.
+          description: Live FX conversion factor. Converts the regional price to another fiat currency using real-time rates.
           schema:
             type: string
-            enum: [USD, EUR, GBP, CAD]
+            enum: [USD, EUR, GBP, CAD, BRL]
       responses:
         '200':
-          description: Lista de ofertas processada em Real-time.
+          description: Real-time deals list processed.
           content:
             application/json:
               example:
@@ -67,21 +71,34 @@ paths:
                       BRL: 149.95
                       TRY: 959.68
                       ARS: 29990.00
-                      converted_to_USD: 30.50
-                  url: "https://..."
+                      converted_to_EUR: 28.50
+                  url: "https://store.steampowered.com/app/1091500"
+
   /deals/search:
     get:
-      summary: Busca ofertas de um jogo específico no ecossistema PC.
+      tags:
+        - Search
+      summary: Search for a specific game deal
+      description: Locate specific deals for any title across the supported PC ecosystem.
+      operationId: searchDeals
       parameters:
         - name: q
           in: query
           required: true
-          description: Nome do jogo para busca (Exemplo 'Cyberpunk').
+          description: Game title to search for (e.g., 'Cyberpunk', 'Elden Ring').
           schema:
             type: string
       responses:
         '200':
-          description: Resultado da busca.
+          description: Search results.
+          content:
+            application/json:
+              example:
+                - title: "Elden Ring"
+                  store: "Steam"
+                  price: 59.99
+                  url: "https://..."
+
 components:
   securitySchemes:
     RapidAPIKey:
